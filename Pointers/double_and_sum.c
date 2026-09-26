@@ -1,5 +1,5 @@
 /*
-Write a program that reads two integer values (A and B).
+A program that reads two integer values (A and B).
 Then, create a function that returns the sum of twice the two
 read values. The function must store twice the value of A in
 variable A itself and twice the value of B in variable B itself.

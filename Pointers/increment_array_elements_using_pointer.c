@@ -1,5 +1,5 @@
 /*
-Write a program that declares an integer array and an integer pointer.
+A program that declares an integer array and an integer pointer.
 Associate the pointer with the array. Then, add one (+1) to each position
 of the array using the pointer (use *).
 */

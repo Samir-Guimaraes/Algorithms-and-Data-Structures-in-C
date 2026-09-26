@@ -1,5 +1,5 @@
 /*
-Write a program that reads 2 integer values and calls a function
+A program that reads 2 integer values and calls a function
 that receives these 2 variables and swaps their contents.
 In other words, the function is called with two variables A and B,
 and after the function execution, A contains B's value and B contains A's value.
@@ -8,7 +8,7 @@ and after the function execution, A contains B's value and B contains A's value.
 #include <stdio.h>
 #include <stdlib.h>
 
-void somaDobro(int *ptr_A, int *ptr_B);
+void sumDuble(int *ptr_A, int *ptr_B);
 
 int main() {
     int var_A, var_B;

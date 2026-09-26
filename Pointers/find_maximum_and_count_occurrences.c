@@ -1,5 +1,5 @@
 /*
-Write a function that accepts an integer array with N values as a parameter
+A function that accepts an integer array with N values as a parameter
 and determines the largest element in the array and the number of times
 this element occurred in the array.
 

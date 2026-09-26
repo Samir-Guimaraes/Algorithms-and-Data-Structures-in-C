@@ -1,5 +1,5 @@
 /*
-Create a program containing a float array with 10 elements.
+A program containing a float array with 10 elements.
 Print the address of each position in the array.
 */
 

@@ -1,5 +1,5 @@
 /*
-Write a program that receives from the user the number N of values to be entered.
+A program that receives from the user the number N of values to be entered.
 Then, the program must dynamically allocate an array of N integers,
 receive N numbers from the user and store them in the array, and display
 the largest value in the array, the smallest value in the array, and the average.

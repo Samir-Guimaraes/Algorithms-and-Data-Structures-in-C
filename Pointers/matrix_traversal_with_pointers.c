@@ -1,5 +1,5 @@
 /*
-Create a program containing a 3x3 float matrix.
+A program containing a 3x3 float matrix.
 Use a pointer to traverse the rows and another pointer to traverse
 the elements of each row, printing the value of each element.
 */

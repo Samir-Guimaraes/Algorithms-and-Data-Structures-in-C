@@ -1,5 +1,5 @@
 /*
-Write a program that asks the user for a number N.
+A program that asks the user for a number N.
 Dynamically allocate an array of N integers.
 Fill it with user-entered values.
 Then, reverse the array in place (without creating another array),
