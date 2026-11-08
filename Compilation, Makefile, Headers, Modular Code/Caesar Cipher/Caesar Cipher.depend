@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1794175461 source:c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\caesar cipher\cryptography.c
+	<stdio.h>
+	<stdlib.h>
+	"cryptography.h"
+
+1794175102 c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\caesar cipher\cryptography.h
+
+1794175533 source:c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\caesar cipher\main.c
+	<stdio.h>
+	<stdlib.h>
+	"cryptography.h"
+
