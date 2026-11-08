@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1794094465 source:c:\users\samir\onedrive\documentos\projetos\testeheaders\operations.c
+	"operations.h"
+
+1794094575 c:\users\samir\onedrive\documentos\projetos\testeheaders\operations.h
+
+1794095588 source:c:\users\samir\onedrive\documentos\projetos\testeheaders\main.c
+	<stdio.h>
+	<stdlib.h>
+	"operations.h"
+
