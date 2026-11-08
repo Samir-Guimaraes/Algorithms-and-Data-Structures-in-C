@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1794114065 source:c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\temperature converter\converter.c
+	"converter.h"
+
+1794112871 c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\temperature converter\converter.h
+
+1794114391 source:c:\users\samir\onedrive\rep_git\algorithms-and-data-structures-in-c\compilation, makefile, headers, modular code\temperature converter\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	"converter.h"
+
