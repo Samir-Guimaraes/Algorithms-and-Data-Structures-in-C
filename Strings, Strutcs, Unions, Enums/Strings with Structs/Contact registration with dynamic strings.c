@@ -1,5 +1,5 @@
 /*
-A program that manages a small contact agenda, using a struct to group
+A program that manages a small contact schedule, using a struct to group
 a person's name, phone number, email, and physical address, all represented
 as fixed-size character arrays.
 
@@ -56,30 +56,30 @@ bool words_are_equal(char *word_01, char *word_02) {
     return true;
 }
 
-/* Reads a contact's data into the last slot of the agenda array. */
-void insert_contact(struct contact *agenda, int num_users) {
+/* Reads a contact's data into the last slot of the schedule array. */
+void insert_contact(struct contact *schedule, int num_users) {
     printf("Enter the contact's name: ");
-    fgets(agenda[num_users - 1].name, sizeof(agenda[num_users - 1].name), stdin);
+    fgets(schedule[num_users - 1].name, sizeof(schedule[num_users - 1].name), stdin);
 
     printf("Enter the contact's phone number: ");
-    fgets(agenda[num_users - 1].phone, sizeof(agenda[num_users - 1].phone), stdin);
+    fgets(schedule[num_users - 1].phone, sizeof(schedule[num_users - 1].phone), stdin);
 
     printf("Enter the contact's email: ");
-    fgets(agenda[num_users - 1].email, sizeof(agenda[num_users - 1].email), stdin);
+    fgets(schedule[num_users - 1].email, sizeof(schedule[num_users - 1].email), stdin);
 
     printf("Enter the contact's physical address: ");
-    fgets(agenda[num_users - 1].address, sizeof(agenda[num_users - 1].address), stdin);
+    fgets(schedule[num_users - 1].address, sizeof(schedule[num_users - 1].address), stdin);
 }
 
-/* Prints every registered contact in the agenda. */
-void print_contacts(struct contact *agenda, int num_users) {
+/* Prints every registered contact in the schedule. */
+void print_contacts(struct contact *schedule, int num_users) {
     for (int i = 0; i < num_users; i++) {
         printf("\n--------------------\n");
         printf("\nContact #%d\n", i + 1);
-        printf("Name:     %s", agenda[i].name);
-        printf("Phone:    %s", agenda[i].phone);
-        printf("Email:    %s", agenda[i].email);
-        printf("Address:  %s", agenda[i].address);
+        printf("Name:     %s", schedule[i].name);
+        printf("Phone:    %s", schedule[i].phone);
+        printf("Email:    %s", schedule[i].email);
+        printf("Address:  %s", schedule[i].address);
         printf("\n--------------------\n");
     }
 }
@@ -89,8 +89,8 @@ int main(void) {
     int num_users = 0, scanf_result, option;
     char search_name[NAME_LENGTH];
 
-    struct contact *agenda = malloc(num_users * sizeof(*agenda));
-    if (!agenda) {
+    struct contact *schedule = malloc(num_users * sizeof(*schedule));
+    if (!schedule) {
         printf("Memory allocation failed.\n");
         return 1;
     }
@@ -112,37 +112,38 @@ loop:
 
     switch (option) {
     case 1: {
-        struct contact *agenda_temp = realloc(agenda, sizeof(*agenda) * (num_users + 1));
-        if (agenda_temp == NULL) {
+        struct contact *schedule_temp = realloc(schedule, sizeof(*schedule) * (num_users + 1));
+        if (schedule_temp == NULL) {
             printf("Reallocation failed!\n");
+            free(schedule);
             return 1;
         }
-        agenda = agenda_temp;
+        schedule = schedule_temp;
         num_users++;
-        insert_contact(agenda, num_users);
+        insert_contact(schedule, num_users);
         break;
     }
 
     case 2:
         if (num_users == 0) {
-            printf("\n\nAgenda is empty, nothing to print.\n\n");
+            printf("\n\nSchedule is empty, nothing to print.\n\n");
         } else {
-            print_contacts(agenda, num_users);
+            print_contacts(schedule, num_users);
         }
         break;
 
     case 3: {
         int found = 0;
         if (num_users == 0) {
-            printf("\n\nAgenda is empty, no names to search.\n\n");
+            printf("\n\nSchedule is empty, no names to search.\n\n");
         } else {
             printf("Enter the name you want to search for: ");
             fgets(search_name, sizeof(search_name), stdin);
             string_to_lower(search_name);
 
             for (int i = 0; i < num_users; i++) {
-                string_to_lower(agenda[i].name);
-                if (words_are_equal(agenda[i].name, search_name)) {
+                string_to_lower(schedule[i].name);
+                if (words_are_equal(schedule[i].name, search_name)) {
                     found++;
                 }
             }
@@ -157,7 +158,7 @@ loop:
 
     case 4:
         printf("Operation aborted.\n");
-        free(agenda);
+        free(schedule);
         exit(0);
         break;
 
@@ -166,9 +167,15 @@ loop:
         break;
     }
 
-    goto loop;
+    int var;
+    printf("Enter the number 1 to return to schedule.\n \
+           Enter any other number to end the process\n \
+           -->");
+    scanf("%d", &var);
+    if(var)
+        goto loop;
 
-    free(agenda);
+    free(schedule);
 
     return 0;
 }
