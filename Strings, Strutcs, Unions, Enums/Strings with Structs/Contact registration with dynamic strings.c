@@ -168,8 +168,7 @@ loop:
     }
 
     int var;
-    printf("Enter the number 1 to return to schedule.\n \
-           Enter any other number to end the process\n \
+    printf("\nEnter the number 1 to return to schedule.\nEnter any other number to end the process\n \
            -->");
     scanf("%d", &var);
     if(var)
