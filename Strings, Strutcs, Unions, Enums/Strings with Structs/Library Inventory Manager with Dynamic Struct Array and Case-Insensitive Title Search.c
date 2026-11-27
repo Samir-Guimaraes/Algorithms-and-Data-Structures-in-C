@@ -18,151 +18,205 @@ The program focuses on:
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <string.h>
 
-#define title_length 100
-#define author_length 80
-#define genre_length 50
+#define TITLE_LENGTH 100
+#define AUTHOR_LENGTH 80
+#define GENRE_LENGTH 50
 
-struct library{
-    char title[title_length];    /* Book title. */
-    char author[author_length];  /* Author's name. */
-    int year;                    /* Publication year. */
-    char genre[genre_length];    /* Book genre. */
+struct library {
+    char title[TITLE_LENGTH];
+    char author[AUTHOR_LENGTH];
+    int year;
+    char genre[GENRE_LENGTH];
 };
 
 void clear_buffer(void) {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF) {
-    }
+    while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
-void insert_book(struct library *books, int inventory){
-
-    printf("Insira o título do livro: ");
-    fgets(books[inventory - 1].title, sizeof(books[inventory - 1].title), stdin);
-    printf("Insira o nome do autor: ");
-    fgets(books[inventory - 1].author, sizeof(books[inventory - 1].author), stdin);
-    printf("Insira o gênero do filme: ");
-    fgets(books[inventory - 1].genre, sizeof(books[inventory - 1].genre), stdin);
-    printf("Insira o ano de publicação do livro: ");
-    scanf("%d", &books[inventory - 1].year);
-};
-
-
-void list_books(struct library *books, int inventory){
-    for(int i = 0; i < inventory; i++){
-        printf("- Exemplar %dº -\n\
-        Nome: %s\n\
-        Autor: %s\n\
-        Gênero: %s\n\
-        Ano: %d\n", (i + 1), books[i].title, books[i].author, books[i].genre, books[i].year);
-    }
-};
-
-void string_lower(char *titulo_atual){
-    for(int i = 0; titulo_atual[i] != '\0'; i++){
-        titulo_atual[i] = tolower(titulo_atual[i]);
-    }
-
+void trim_newline(char *s) {
+    size_t len = strlen(s);
+    if (len > 0 && s[len - 1] == '\n')
+        s[len - 1] = '\0';
 }
 
-bool searched_book(char *titulo_atual, char *titulo_buscado){
-    for(int i = 0; titulo_atual[i] != '\0'; i++){
-        for(int j = 0; titulo_buscado[j] != '\0'; j++){
-            if(titulo_atual[i] != titulo_buscado[j])
-                return false;
+bool searched_book(const char *current_title, const char *search_title) {
+    size_t n = strlen(search_title);
+    if (n == 0) return true;
+    for (size_t i = 0; current_title[i] != '\0'; i++) {
+        size_t j = 0;
+        while (j < n && current_title[i + j] != '\0' &&
+               tolower((unsigned char)current_title[i + j]) ==
+               tolower((unsigned char)search_title[j]))
+            j++;
+        if (j == n) return true;
+    }
+    return false;
+}
+
+void insert_book(struct library *books, int inventory) {
+    int index = inventory - 1;
+    printf("Enter the book title: ");
+    fgets(books[index].title, sizeof(books[index].title), stdin);
+    trim_newline(books[index].title);
+
+    printf("Enter the author's name: ");
+    fgets(books[index].author, sizeof(books[index].author), stdin);
+    trim_newline(books[index].author);
+
+    printf("Enter the book genre: ");
+    fgets(books[index].genre, sizeof(books[index].genre), stdin);
+    trim_newline(books[index].genre);
+
+    printf("Enter the book publication year: ");
+    if (scanf("%d", &books[index].year) != 1) {
+        books[index].year = 0;
+    }
+    clear_buffer();
+}
+
+bool remove_book(struct library **books, int *inventory, const char *search_title) {
+    int index = -1;
+
+    for (int i = 0; i < *inventory; i++) {
+        if (searched_book((*books)[i].title, search_title)) {
+            index = i;
+            break;
         }
+    }
+
+    if (index < 0) return false;
+
+    for (int i = index; i < *inventory - 1; i++) {
+        (*books)[i] = (*books)[i + 1];
+    }
+
+    (*inventory)--;
+
+    if (*inventory > 0) {
+        struct library *tmp = realloc(*books, (size_t)(*inventory) * sizeof(**books));
+        if (tmp != NULL) *books = tmp;
+    } else {
+        free(*books);
+        *books = NULL;
     }
     return true;
-};
+}
 
-int main(){
-    int option, scanf_result, inventory = 0;
-
-
-    struct library *books = malloc(inventory * sizeof(inventory));
-    if(books == NULL){
-        printf("Memory alocation failed.\n");
-        return 1;
+void list_books(const struct library *books, int inventory) {
+    for (int i = 0; i < inventory; i++) {
+        printf("- Copy %d -\n"
+               "        Title: %s\n"
+               "        Author: %s\n"
+               "        Genre: %s\n"
+               "        Year: %d\n",
+               i + 1, books[i].title, books[i].author,
+               books[i].genre, books[i].year);
     }
+}
 
-library_loop:
-    do{
-    printf("----- Library -----\n\
-       selecione a opção desejada\n\
-       1 - Cadastrar novos livros.\n\
-       2 - Listas livros cadastrados\n\
-       3 - Pesquisar por título.\n\
-       4 - Remover títulos inscritos.\n\
-       5 - Abortar processo.\n\
-       --> ");
-           scanf_result = scanf("%d", &option);
-           clear_buffer();
+int main(void) {
+    int option = 0;
+    int inventory = 0;
+    struct library *books = NULL;
 
-           if(scanf_result != 1)
-            printf("\nSelecione um valor válido\n");
-    }while(!scanf_result);
+    while (option != 5) {
+        int scanf_result;
+        do {
+            printf("----- Library -----\n"
+                   "       Select the desired option\n"
+                   "       1 - Register new books.\n"
+                   "       2 - List registered books.\n"
+                   "       3 - Search by title.\n"
+                   "       4 - Remove registered titles.\n"
+                   "       5 - Abort process.\n"
+                   "       --> ");
+            scanf_result = scanf("%d", &option);
+            clear_buffer();
 
-    switch (option){
-    case 1:
-        struct library *books_temp = realloc(books, (inventory+1) * sizeof(*books));
-        if(books_temp == NULL){
-            printf("Realocation failed.\n");
-            return 1;
+            if (scanf_result != 1) {
+                option = 0;
+                printf("\nPlease select a valid value\n");
+            }
+        } while (scanf_result != 1);
+
+        switch (option) {
+        case 1: {
+            struct library *tmp = realloc(books, (size_t)(inventory + 1) * sizeof(*books));
+            if (tmp == NULL) {
+                printf("Reallocation failed.\n");
+                free(books);
+                return 1;
+            }
+            books = tmp;
+            inventory++;
+            insert_book(books, inventory);
+            break;
         }
-        books = books_temp;
-        inventory++;
-        insert_book(books, inventory);
-        break;
-    case 2:
-        if(inventory == 0)
-            printf("Nenhum livro foi cadastrado");
-        else
-            list_books(books, inventory);
-        break;
-    case 3:
-        if(inventory == 0){
-            printf("Nenhum livro foi cadastrado");
-        }
-        else{
+        case 2:
+            if (inventory == 0)
+                printf("No books have been registered.\n");
+            else
+                list_books(books, inventory);
+            break;
+        case 3: {
+            if (inventory == 0) {
+                printf("No books have been registered.\n");
+                break;
+            }
+            char search_title[TITLE_LENGTH];
+            int counter = 0;
 
-            char livro_atual[title_length], livro_buscado[title_length];
-            int found = 0, contador = 0;
+            printf("Enter the title you want to search for: ");
+            fgets(search_title, sizeof(search_title), stdin);
+            trim_newline(search_title);
 
-            printf("Escreva o título que deseja buscar: ");
-            fgets(livro_buscado, sizeof(livro_buscado), stdin);
-
-            string_lower(livro_atual);
-            string_lower(livro_buscado);
-
-            for(int i = 0; i < inventory; i++){
-                if(searched_book(livro_atual, livro_buscado))
-                    found = 1;
-                    contador ++;
+            for (int i = 0; i < inventory; i++) {
+                if (searched_book(books[i].title, search_title)) {
+                    printf("Found: %s (Year: %d)\n", books[i].title, books[i].year);
+                    counter++;
+                }
             }
 
-            if(found)
-                printf("Título %s encontrado %d vezes", livro_buscado,contador);
+            if (counter > 0)
+                printf("Title \"%s\" found %d time(s).\n", search_title, counter);
             else
-                printf("Título %s não encontrado.", livro_buscado);
+                printf("Title \"%s\" not found.\n", search_title);
+            break;
         }
-        break;
-    case 4:
-        printf("Caso 4");
-        break;
-    case 5:
-        printf("Processo abortado");
-        break;
-    default:
-        printf("option invalid.");
-        break;
+        case 4: {
+            if (inventory == 0) {
+                printf("No books have been registered.\n");
+                break;
+            }
+            char search_title[TITLE_LENGTH];
 
+            printf("Enter the title you want to remove: ");
+            fgets(search_title, sizeof(search_title), stdin);
+            trim_newline(search_title);
+
+            if (remove_book(&books, &inventory, search_title)) {
+                printf("Book removed successfully.\n");
+                if (inventory > 0)
+                    list_books(books, inventory);
+                else
+                    printf("The library is empty.\n");
+            } else {
+                printf("The book \"%s\" has not been registered.\n", search_title);
+            }
+            break;
+        }
+        case 5:
+            printf("Process aborted.\n");
+            break;
+        default:
+            printf("Invalid option.\n");
+            break;
+        }
     }
 
-
-    if(option != 5)
-        goto library_loop;
     free(books);
-
     return 0;
 }
